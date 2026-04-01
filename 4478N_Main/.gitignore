@@ -1,0 +1,43 @@
+# Compiled Object files
+*.o
+*.obj
+
+# Executables
+*.bin
+*.elf
+
+# PROS
+bin/
+.vscode/*
+!.vscode/c_cpp_properties.json
+.cache/
+compile_commands.json
+temp.log
+temp.errors
+*.ini
+.d/
+
+build/
+bin/
+*.o
+*.d
+*.elf
+.vscode/*
+!.vscode/c_cpp_properties.json
+.idea/
+*.log
+*.tmp
+*.swp
+*.DS_Store
+
+build/
+bin/
+*.o
+*.d
+*.elf
+.vscode/
+.idea/
+*.log
+*.tmp
+*.swp
+*.DS_Store

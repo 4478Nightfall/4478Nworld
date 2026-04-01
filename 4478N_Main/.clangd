@@ -1,0 +1,11 @@
+CompileFlags:
+  CompilationDatabase: .
+Diagnostics:
+  Suppress: 
+    - unused-command-line-argument
+    - unknown-argument
+    - drv_unsupported_opt_for_target
+  UnusedIncludes: None
+  MissingIncludes: None
+Index:
+  Background: Build
