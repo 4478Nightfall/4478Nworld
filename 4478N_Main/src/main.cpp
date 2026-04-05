@@ -44,8 +44,15 @@ void initialize()
 
     pros::Task screen_task([&]() {
         while (true) {
-            const Pose lem = chassis.getPose();
-            pros::lcd::print(0, "LEM %5.1f %5.1f h%4.0f", lem.x, lem.y, lem.theta);
+            double rx = 0.0;
+            double ry = 0.0;
+            double rth = 0.0;
+            if (getLastDistanceResetPose(rx, ry, rth)) {
+                pros::lcd::print(0, "RST %5.1f %5.1f h%4.0f", rx, ry, rth);
+            } else {
+                const Pose lem = chassis.getPose();
+                pros::lcd::print(0, "LEM %5.1f %5.1f h%4.0f", lem.x, lem.y, lem.theta);
+            }
 
             auto distLine = [&](int line, const char* tag, Distance* dev) {
                 if (dev == nullptr) {

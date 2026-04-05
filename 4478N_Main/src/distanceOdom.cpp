@@ -13,11 +13,22 @@ using namespace lemlib;
 // sensor to center along each face (in) -- should match header constants
 double frontOffset = 8.0;
 double backOffset = 4.0;
-double leftOffset = 4.5;
+double leftOffset = 5.5;
 double rightOffset = 5.0;
+// along face from center (in); + = forward on L/R, + = right on F/B; scaled by cos(angle to bore)
+double frontEdgeOffset = 0;
+double backEdgeOffset = 0;
+double leftEdgeOffset = 0;
+double rightEdgeOffset = 0;
+const double fieldHalfSize = 71.0; // in
 static double theta = 0.0;
 static double x = chassis.getPose().x;
 static double y = chassis.getPose().y;
+
+static double lastDistResetX = 0.0;
+static double lastDistResetY = 0.0;
+static double lastDistResetTheta = 0.0;
+static bool lastDistResetValid = false;
 
 // misc helpers
 double mmToInches(double mm) { return mm / 25.4; }
@@ -43,79 +54,88 @@ double perpAlongNormal(double rangeInches, double boreDeg, double normalDeg) {
     const double d = smallestAngleDiffDeg(norm360(boreDeg), norm360(normalDeg));
     return rangeInches * std::cos(degreesToRadians(d));
 }
+// edge offset along the face: +forward on L/R, +right on F/B (body); project onto boresight
+static double edgeOnBore(double boreDeg, double alongFaceDeg, double edgeIn) {
+    const double d = smallestAngleDiffDeg(norm360(boreDeg), norm360(alongFaceDeg));
+    return edgeIn * std::cos(degreesToRadians(d));
+}
 
 // one calc per sensor - branches are which wall based on heading
 void calcLeft(){
     const double boreL = theta - 90.0;
-    double leftReading = (mmToInches(leftDistance->get()) + leftOffset);
+    double leftReading =
+        (mmToInches(leftDistance->get()) + leftOffset + edgeOnBore(boreL, theta, leftEdgeOffset));
 
     if(theta <= 45 || theta > 315){
-        x = -70 + perpAlongNormal(leftReading, boreL, 270.0);
+        x = -fieldHalfSize + perpAlongNormal(leftReading, boreL, 270.0);
     }
     else if(theta >= 135 && theta <= 225){
-        x = 70 - perpAlongNormal(leftReading, boreL, 90.0);
+        x = fieldHalfSize - perpAlongNormal(leftReading, boreL, 90.0);
     }
     else if (theta >= 45 && theta <= 135){
-        y = 70 - perpAlongNormal(leftReading, boreL, 0.0);
+        y = fieldHalfSize - perpAlongNormal(leftReading, boreL, 0.0);
     }
     else if(theta >= 225 && theta <= 315){
-        y = -70 + perpAlongNormal(leftReading, boreL, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(leftReading, boreL, 180.0);
     }
 } 
 
 
 void calcRight(){
     const double boreR = theta + 90.0; 
-    double rightReading = (mmToInches(rightDistance->get())+ rightOffset);
+    double rightReading =
+        (mmToInches(rightDistance->get()) + rightOffset + edgeOnBore(boreR, theta, rightEdgeOffset));
 
     if(theta <= 45 || theta > 315){
-        x = 70 - perpAlongNormal(rightReading, boreR, 90.0);
+        x = fieldHalfSize - perpAlongNormal(rightReading, boreR, 90.0);
     }
     else if(theta >= 135 && theta <= 225){
-        x = -70 + perpAlongNormal(rightReading, boreR, 270.0);
+        x = -fieldHalfSize  + perpAlongNormal(rightReading, boreR, 270.0);
     }
     else if (theta >= 45 && theta <= 135){
-        y = -70 + perpAlongNormal(rightReading, boreR, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(rightReading, boreR, 180.0);
     }
     else if(theta >= 225 && theta <= 315){
-        y = 70 - perpAlongNormal(rightReading, boreR, 0.0);
+        y = fieldHalfSize - perpAlongNormal(rightReading, boreR, 0.0);
     }
 
 }
 
 void calcFront(){
     const double boreF = theta;
-    double frontReading = (mmToInches(frontDistance->get())+ frontOffset);
+    double frontReading = (mmToInches(frontDistance->get()) + frontOffset +
+                          edgeOnBore(boreF, theta + 90.0, frontEdgeOffset));
 
     if(theta >= 45 && theta <= 135){
-        x = 70 - perpAlongNormal(frontReading, boreF, 90.0);
+        x = fieldHalfSize - perpAlongNormal(frontReading, boreF, 90.0);
     }
     else if(theta >= 225 && theta <= 315){
-        x = -70 + perpAlongNormal(frontReading, boreF, 270.0);
+        x = -fieldHalfSize + perpAlongNormal(frontReading, boreF, 270.0);
     }
     else if (theta <= 45 || theta > 315){
-        y = 70 - perpAlongNormal(frontReading, boreF, 0.0);
+        y = fieldHalfSize - perpAlongNormal(frontReading, boreF, 0.0);
     }
     else if(theta >= 135 && theta <= 225){
-        y = -70 + perpAlongNormal(frontReading, boreF, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(frontReading, boreF, 180.0);
     }
 }
 
 void calcBack(){
     const double boreB = theta + 180.0;
-    double backReading = (mmToInches(backDistancePtr->get()) + backOffset);
+    double backReading = (mmToInches(backDistancePtr->get()) + backOffset +
+                          edgeOnBore(boreB, theta + 90.0, backEdgeOffset));
 
     if(theta >= 45 && theta <= 135){
-        x = -70 + perpAlongNormal(backReading, boreB, 270.0);
+        x = -fieldHalfSize + perpAlongNormal(backReading, boreB, 270.0);
     }
     else if(theta >= 225 && theta <= 315){
-        x = 70 - perpAlongNormal(backReading, boreB, 90.0);
+        x = fieldHalfSize - perpAlongNormal(backReading, boreB, 90.0);
     }
     else if (theta <= 45 || theta > 315){
-        y = -70 + perpAlongNormal(backReading, boreB, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(backReading, boreB, 180.0);
     }
     else if(theta >= 135 && theta <= 225){
-        y = 70 - perpAlongNormal(backReading, boreB, 0.0);
+        y = fieldHalfSize - perpAlongNormal(backReading, boreB, 0.0);
     }
 }
 
@@ -138,5 +158,20 @@ void resetOdom(bool Front, bool Back, bool Left, bool Right){
         calcRight();
     }
 
-    chassis.setPose(x, y, chassis.getPose().theta);
+    const double poseTheta = chassis.getPose().theta;
+    chassis.setPose(x, y, poseTheta);
+    lastDistResetX = x;
+    lastDistResetY = y;
+    lastDistResetTheta = poseTheta;
+    lastDistResetValid = true;
+}
+
+bool getLastDistanceResetPose(double& outX, double& outY, double& outTheta) {
+    if (!lastDistResetValid) {
+        return false;
+    }
+    outX = lastDistResetX;
+    outY = lastDistResetY;
+    outTheta = lastDistResetTheta;
+    return true;
 }

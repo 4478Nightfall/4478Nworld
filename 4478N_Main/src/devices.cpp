@@ -173,17 +173,17 @@ imu_orientation_e_t DualIMU::get_physical_orientation() const {
 
 // ---------- devices / lemlib setup ----------
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
-pros::MotorGroup right_motors({17, -19, 5}, pros::MotorGearset::blue);
-pros::MotorGroup left_motors({-15, 12, -11}, pros::MotorGearset::blue);
+pros::MotorGroup right_motors({18, -19, 20}, pros::MotorGearset::blue);
+pros::MotorGroup left_motors({-12, 13, -14}, pros::MotorGearset::blue);
 pros::Motor firstStage{-8, pros::MotorGearset::green};
-pros::Motor middleStage{-6, pros::MotorGearset::blue};
+pros::Motor middleStage{-2, pros::MotorGearset::blue};
 pros::Motor backBottom{10, pros::MotorGearset::green};
 pros::MotorGroup intake({-8, -6, 10});
-pros::Motor mfl(-15 , pros::MotorGearset::blue);
-pros::Motor mbl(-11, pros::MotorGearset::blue);
+pros::Motor mfl(-13 , pros::MotorGearset::blue);
+pros::Motor mbl(-14, pros::MotorGearset::blue);
 pros::Motor mml(-12, pros::MotorGearset::blue);
-pros::Motor mfr(17, pros::MotorGearset::blue);
-pros::Motor mbr(5, pros::MotorGearset::blue);
+pros::Motor mfr(18, pros::MotorGearset::blue);
+pros::Motor mbr(20, pros::MotorGearset::blue);
 pros::Motor mmr(19, pros::MotorGearset::blue);  
 pros::Rotation autonSelector(7);
 pros::Rotation hTracker(21);
@@ -202,9 +202,9 @@ Distance* frontDistance = &frontDistanceSensor;
 Distance* backDistancePtr = &backDistance;
 Distance* leftDistance = &leftDistanceSensor;
 Distance* rightDistance = &rightDistanceSensor;
-adi::Port hood('C', E_ADI_DIGITAL_OUT);
-adi::Port matchloadMech('A', E_ADI_DIGITAL_OUT);
-adi::Port descore('B', E_ADI_DIGITAL_OUT);
+adi::Port hood('A', E_ADI_DIGITAL_OUT);
+adi::Port matchloadMech('B', E_ADI_DIGITAL_OUT);
+adi::Port descore('C', E_ADI_DIGITAL_OUT);
 adi::Port midGoal('D', E_ADI_DIGITAL_OUT);
 
 
