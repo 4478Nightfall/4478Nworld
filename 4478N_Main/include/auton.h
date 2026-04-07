@@ -28,5 +28,6 @@ extern void right4Wing();
 extern void fakeRight();
 extern void fakeLeft();
 extern void soloAWPCounter();
+extern void parkSkills();
 
 #endif

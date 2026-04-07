@@ -11,24 +11,19 @@ using namespace lemlib;
 // body +x right +y fwd. calcs figure which wall youre facing and snap x or y
 
 // sensor to center along each face (in) -- should match header constants
-double frontOffset = 8.0;
-double backOffset = 4.0;
-double leftOffset = 5.5;
-double rightOffset = 5.0;
-// along face from center (in); + = forward on L/R, + = right on F/B; scaled by cos(angle to bore)
-double frontEdgeOffset = 0;
-double backEdgeOffset = 0;
-double leftEdgeOffset = 0;
-double rightEdgeOffset = 0;
+double frontOffset = 2.0;
+double backOffset = 6.0;
+double leftOffset = 3.5;
+double rightOffset = 4.0;
+// *EdgeOffsets: along bumper (F/B + = right +x, L/R + = forward +y). Cardinal*sin(d) added to perp distance after perpAlongNormal.
+double frontEdgeOffset = 5;
+double backEdgeOffset = 6.5;
+double leftEdgeOffset = 3;
+double rightEdgeOffset = 2.5;
 const double fieldHalfSize = 71.0; // in
 static double theta = 0.0;
 static double x = chassis.getPose().x;
 static double y = chassis.getPose().y;
-
-static double lastDistResetX = 0.0;
-static double lastDistResetY = 0.0;
-static double lastDistResetTheta = 0.0;
-static bool lastDistResetValid = false;
 
 // misc helpers
 double mmToInches(double mm) { return mm / 25.4; }
@@ -54,96 +49,120 @@ double perpAlongNormal(double rangeInches, double boreDeg, double normalDeg) {
     const double d = smallestAngleDiffDeg(norm360(boreDeg), norm360(normalDeg));
     return rangeInches * std::cos(degreesToRadians(d));
 }
-// edge offset along the face: +forward on L/R, +right on F/B (body); project onto boresight
-static double edgeOnBore(double boreDeg, double alongFaceDeg, double edgeIn) {
-    const double d = smallestAngleDiffDeg(norm360(boreDeg), norm360(alongFaceDeg));
-    return edgeIn * std::cos(degreesToRadians(d));
+// ±inches from heading vs cardinals; scaled by sin(d), added to perpendicular (after perpAlongNormal).
+static double cardinalEdgeTerm(double headingDeg, double signedEdge) {
+    const double t = norm360(headingDeg);
+    if (t < 45) return -signedEdge;
+    if (t <= 90) return signedEdge;
+    if (t <= 135) return -signedEdge;
+    if (t <= 180) return signedEdge;
+    if (t <= 225) return -signedEdge;
+    if (t <= 270) return signedEdge;
+    if (t <= 315) return -signedEdge;
+    return signedEdge;
+}
+
+static double edgePerpCorr(double boreDeg, double normalDeg, double headingDeg, double signedEdge) {
+    const double d = smallestAngleDiffDeg(norm360(boreDeg), norm360(normalDeg));
+    return cardinalEdgeTerm(headingDeg, signedEdge) * std::sin(degreesToRadians(d));
 }
 
 // one calc per sensor - branches are which wall based on heading
 void calcLeft(){
     const double boreL = theta - 90.0;
-    double leftReading =
-        (mmToInches(leftDistance->get()) + leftOffset + edgeOnBore(boreL, theta, leftEdgeOffset));
+    const double leftReading = mmToInches(leftDistance->get()) + leftOffset;
 
     if(theta <= 45 || theta > 315){
-        x = -fieldHalfSize + perpAlongNormal(leftReading, boreL, 270.0);
+        x = -fieldHalfSize + perpAlongNormal(leftReading, boreL, 270.0) +
+            edgePerpCorr(boreL, 270.0, theta, leftEdgeOffset);
     }
     else if(theta >= 135 && theta <= 225){
-        x = fieldHalfSize - perpAlongNormal(leftReading, boreL, 90.0);
+        x = fieldHalfSize - perpAlongNormal(leftReading, boreL, 90.0) -
+            edgePerpCorr(boreL, 90.0, theta, leftEdgeOffset);
     }
     else if (theta >= 45 && theta <= 135){
-        y = fieldHalfSize - perpAlongNormal(leftReading, boreL, 0.0);
+        y = fieldHalfSize - perpAlongNormal(leftReading, boreL, 0.0) -
+            edgePerpCorr(boreL, 0.0, theta, leftEdgeOffset);
     }
     else if(theta >= 225 && theta <= 315){
-        y = -fieldHalfSize + perpAlongNormal(leftReading, boreL, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(leftReading, boreL, 180.0) +
+            edgePerpCorr(boreL, 180.0, theta, leftEdgeOffset);
     }
 } 
 
 
 void calcRight(){
     const double boreR = theta + 90.0; 
-    double rightReading =
-        (mmToInches(rightDistance->get()) + rightOffset + edgeOnBore(boreR, theta, rightEdgeOffset));
+    const double rightReading = mmToInches(rightDistance->get()) + rightOffset;
 
     if(theta <= 45 || theta > 315){
-        x = fieldHalfSize - perpAlongNormal(rightReading, boreR, 90.0);
+        x = fieldHalfSize - perpAlongNormal(rightReading, boreR, 90.0) -
+            edgePerpCorr(boreR, 90.0, theta, rightEdgeOffset);
     }
     else if(theta >= 135 && theta <= 225){
-        x = -fieldHalfSize  + perpAlongNormal(rightReading, boreR, 270.0);
+        x = -fieldHalfSize + perpAlongNormal(rightReading, boreR, 270.0) +
+            edgePerpCorr(boreR, 270.0, theta, rightEdgeOffset);
     }
     else if (theta >= 45 && theta <= 135){
-        y = -fieldHalfSize + perpAlongNormal(rightReading, boreR, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(rightReading, boreR, 180.0) +
+            edgePerpCorr(boreR, 180.0, theta, rightEdgeOffset);
     }
     else if(theta >= 225 && theta <= 315){
-        y = fieldHalfSize - perpAlongNormal(rightReading, boreR, 0.0);
+        y = fieldHalfSize - perpAlongNormal(rightReading, boreR, 0.0) -
+            edgePerpCorr(boreR, 0.0, theta, rightEdgeOffset);
     }
 
 }
 
 void calcFront(){
     const double boreF = theta;
-    double frontReading = (mmToInches(frontDistance->get()) + frontOffset +
-                          edgeOnBore(boreF, theta + 90.0, frontEdgeOffset));
+    const double frontReading = mmToInches(frontDistance->get()) + frontOffset;
 
     if(theta >= 45 && theta <= 135){
-        x = fieldHalfSize - perpAlongNormal(frontReading, boreF, 90.0);
+        x = fieldHalfSize - perpAlongNormal(frontReading, boreF, 90.0) -
+            edgePerpCorr(boreF, 90.0, theta, frontEdgeOffset);
     }
     else if(theta >= 225 && theta <= 315){
-        x = -fieldHalfSize + perpAlongNormal(frontReading, boreF, 270.0);
+        x = -fieldHalfSize + perpAlongNormal(frontReading, boreF, 270.0) +
+            edgePerpCorr(boreF, 270.0, theta, frontEdgeOffset);
     }
     else if (theta <= 45 || theta > 315){
-        y = fieldHalfSize - perpAlongNormal(frontReading, boreF, 0.0);
+        y = fieldHalfSize - perpAlongNormal(frontReading, boreF, 0.0) -
+            edgePerpCorr(boreF, 0.0, theta, frontEdgeOffset);
     }
     else if(theta >= 135 && theta <= 225){
-        y = -fieldHalfSize + perpAlongNormal(frontReading, boreF, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(frontReading, boreF, 180.0) +
+            edgePerpCorr(boreF, 180.0, theta, frontEdgeOffset);
     }
 }
 
 void calcBack(){
     const double boreB = theta + 180.0;
-    double backReading = (mmToInches(backDistancePtr->get()) + backOffset +
-                          edgeOnBore(boreB, theta + 90.0, backEdgeOffset));
+    const double backReading = mmToInches(backDistancePtr->get()) + backOffset;
 
     if(theta >= 45 && theta <= 135){
-        x = -fieldHalfSize + perpAlongNormal(backReading, boreB, 270.0);
+        x = -fieldHalfSize + perpAlongNormal(backReading, boreB, 270.0) +
+            edgePerpCorr(boreB, 270.0, theta, backEdgeOffset);
     }
     else if(theta >= 225 && theta <= 315){
-        x = fieldHalfSize - perpAlongNormal(backReading, boreB, 90.0);
+        x = fieldHalfSize - perpAlongNormal(backReading, boreB, 90.0) -
+            edgePerpCorr(boreB, 90.0, theta, backEdgeOffset);
     }
     else if (theta <= 45 || theta > 315){
-        y = -fieldHalfSize + perpAlongNormal(backReading, boreB, 180.0);
+        y = -fieldHalfSize + perpAlongNormal(backReading, boreB, 180.0) +
+            edgePerpCorr(boreB, 180.0, theta, backEdgeOffset);
     }
     else if(theta >= 135 && theta <= 225){
-        y = fieldHalfSize - perpAlongNormal(backReading, boreB, 0.0);
+        y = fieldHalfSize - perpAlongNormal(backReading, boreB, 0.0) -
+            edgePerpCorr(boreB, 0.0, theta, backEdgeOffset);
     }
 }
 
 // call from auton or tester -- bools = which sensors to trust, sets pose from walls
 void resetOdom(bool Front, bool Back, bool Left, bool Right){
     theta = chassis.getPose().theta;
-    x = 0.0;
-    y = 0.0;
+    x = chassis.getPose().x;
+    y = chassis.getPose().y;
 
     if(Front){
         calcFront();
@@ -160,18 +179,4 @@ void resetOdom(bool Front, bool Back, bool Left, bool Right){
 
     const double poseTheta = chassis.getPose().theta;
     chassis.setPose(x, y, poseTheta);
-    lastDistResetX = x;
-    lastDistResetY = y;
-    lastDistResetTheta = poseTheta;
-    lastDistResetValid = true;
-}
-
-bool getLastDistanceResetPose(double& outX, double& outY, double& outTheta) {
-    if (!lastDistResetValid) {
-        return false;
-    }
-    outX = lastDistResetX;
-    outY = lastDistResetY;
-    outTheta = lastDistResetTheta;
-    return true;
 }

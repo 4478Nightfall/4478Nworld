@@ -175,10 +175,10 @@ imu_orientation_e_t DualIMU::get_physical_orientation() const {
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup right_motors({18, -19, 20}, pros::MotorGearset::blue);
 pros::MotorGroup left_motors({-12, 13, -14}, pros::MotorGearset::blue);
-pros::Motor firstStage{-8, pros::MotorGearset::green};
+pros::Motor firstStage{-7, pros::MotorGearset::green};
 pros::Motor middleStage{-2, pros::MotorGearset::blue};
-pros::Motor backBottom{10, pros::MotorGearset::green};
-pros::MotorGroup intake({-8, -6, 10});
+pros::Motor backBottom{21, pros::MotorGearset::green};
+pros::MotorGroup intake({-7, -2, 21});
 pros::Motor mfl(-13 , pros::MotorGearset::blue);
 pros::Motor mbl(-14, pros::MotorGearset::blue);
 pros::Motor mml(-12, pros::MotorGearset::blue);
@@ -187,16 +187,16 @@ pros::Motor mbr(20, pros::MotorGearset::blue);
 pros::Motor mmr(19, pros::MotorGearset::blue);  
 pros::Rotation autonSelector(7);
 pros::Rotation hTracker(21);
-pros::Imu imu1(1);
+pros::Imu imu1(6);
 pros::Imu imu2(18);
 DualIMU imu(&imu1, &imu2); // combined imu object
 pros::Optical colorSort(5);
 pros::Optical counter(20);
 
-pros::Distance frontDistanceSensor(4);
-pros::Distance backDistance(16);
-pros::Distance leftDistanceSensor(3);
-pros::Distance rightDistanceSensor(2);
+pros::Distance frontDistanceSensor(8);
+pros::Distance backDistance(17);
+pros::Distance leftDistanceSensor(1);
+pros::Distance rightDistanceSensor(9);
 
 Distance* frontDistance = &frontDistanceSensor;
 Distance* backDistancePtr = &backDistance;
@@ -212,7 +212,7 @@ lemlib::TrackingWheel horizontal_tracking_wheel(&hTracker, lemlib::Omniwheel::NE
 
 lemlib::Drivetrain drivetrain(&left_motors,
                               &right_motors,
-                              11.5,
+                              10.5,
                               lemlib::Omniwheel::NEW_325,
                               450,
                               2);
