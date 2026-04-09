@@ -7,8 +7,6 @@
 #include "autonSelector.h"
 #include "moveFunctions.h"
 #include "opticalAlign.h"
-#include "distanceOdom.h"
-#include "PIDtuner.h"
 #include "pros/misc.h"
 #include "pros/motors.h"
 #include <cmath>  // For fabs()
@@ -176,7 +174,7 @@ void autonomous()
     //     break;
     // }
 
-        parkSkills();
+        soloAWPCounter();
         
 }
 
@@ -211,13 +209,6 @@ void opcontrol()
     // Outtake speed toggle variables (outside loop to persist state)
     uint32_t midGoalReleaseTime = 0;  // when A was released, for 2 sec hold
     bool wasAPressed = false;
-
-    // Distance odom test: B = open/close picker, D-pad = toggle F/B/L/R, Y = resetOdom(selected)
-    bool distOdomPickMode = false;
-    bool distPickFront = false;
-    bool distPickBack = false;
-    bool distPickLeft = false;
-    bool distPickRight = false;
 
     // Main driver control loop
     while (true)
@@ -323,44 +314,8 @@ void opcontrol()
             descore.set_value(HIGH); // Close descore when button is released
         }
 
-        if (distOdomPickMode) {
-            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-                distOdomPickMode = false;
-                controller.rumble(".");
-            } else if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
-                if (!distPickFront && !distPickBack && !distPickLeft && !distPickRight) {
-                    controller.rumble("-");
-                } else {
-                    resetOdom(distPickFront, distPickBack, distPickLeft, distPickRight);
-                    controller.rumble(".");
-                    distOdomPickMode = false;
-                }
-            } else {
-                if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-                    distPickFront = !distPickFront;
-                }
-                if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-                    distPickBack = !distPickBack;
-                }
-                if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-                    distPickLeft = !distPickLeft;
-                }
-                if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-                    distPickRight = !distPickRight;
-                }
-            }
-            controller.print(0, 0, "DistOdom B=cnc Y=go");
-            controller.print(1, 0, "F:%d B:%d L:%d R:%d", distPickFront, distPickBack, distPickLeft,
-                             distPickRight);
-            controller.print(2, 0, "Dpad toggles sensor");
-        } else {
-            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-                distOdomPickMode = true;
-                distPickFront = distPickBack = distPickLeft = distPickRight = false;
-            }
-            if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-                matchloadMech.set_value(matchloadMech.get_value() == LOW ? HIGH : LOW);
-            }
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+            matchloadMech.set_value(matchloadMech.get_value() == LOW ? HIGH : LOW);
         }
 
         // delay to save resources

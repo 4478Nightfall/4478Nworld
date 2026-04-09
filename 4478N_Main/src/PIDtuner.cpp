@@ -83,7 +83,7 @@ void drivePIDTune(double kP, double kI, double kD, double fwdVal, double maxSpee
         double rightMedian = rightPositions[1];
         
         // Average the two medians
-        double medianPos = (leftMedian + rightMedian);
+        double medianPos = (leftMedian + rightMedian)/2;
         double processVariable = medianPos * 360;
         
         error = target - processVariable;
@@ -190,10 +190,10 @@ void pidTuningMode() {
     int displayCounter = 0;
     
     while (true) {
-        // Check if user wants to exit tuning mode (press the same button that entered)
-        // For now, we'll use a different button or keep it running until program ends
-        // You can add an exit condition here if needed
-        
+        if (controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+            break;
+        }
+
         // Get current button states
         bool upPressed = controller.get_digital(E_CONTROLLER_DIGITAL_UP);
         bool downPressed = controller.get_digital(E_CONTROLLER_DIGITAL_DOWN);

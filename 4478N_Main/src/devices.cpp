@@ -224,19 +224,19 @@ lemlib::OdomSensors sensors(nullptr,
                             &imu1
 );
 
-lemlib::ControllerSettings lateral_controller(55,
+lemlib::ControllerSettings lateral_controller(50,
                                               0,
-                                              5,
+                                              12,
                                               0,
                                               1,
                                               100,
                                               3,
-                                              300,
+                                              500,
                                               20);
 
-lemlib::ControllerSettings angular_controller(1.5,
+lemlib::ControllerSettings angular_controller(2,
                                               0,
-                                              9,
+                                              11.5,
                                               0,
                                               2,
                                               200,

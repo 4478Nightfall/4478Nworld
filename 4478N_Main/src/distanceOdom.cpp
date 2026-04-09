@@ -160,7 +160,8 @@ void calcBack(){
 
 // call from auton or tester -- bools = which sensors to trust, sets pose from walls
 void resetOdom(bool Front, bool Back, bool Left, bool Right){
-    theta = chassis.getPose().theta;
+    // LemLib heading can be negative or outside [0,360); wall branches require 0–360.
+    theta = norm360(chassis.getPose().theta);
     x = chassis.getPose().x;
     y = chassis.getPose().y;
 
@@ -177,6 +178,5 @@ void resetOdom(bool Front, bool Back, bool Left, bool Right){
         calcRight();
     }
 
-    const double poseTheta = chassis.getPose().theta;
-    chassis.setPose(x, y, poseTheta);
+    chassis.setPose(x, y, theta);
 }

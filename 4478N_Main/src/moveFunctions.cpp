@@ -234,9 +234,9 @@ double slew(double val, double fwdVal)
 void drivePID(double fwdVal, double maxSpeedPercent, double timeout)
 {
     
-    double kP = 0.2; 
+    double kP = 0.15; 
     double kI = 0.000000; 
-    double kD = 0.17; 
+    double kD = 0.18; 
 
     const double diameter = 3.25;
     const double pi = 3.14159;
@@ -264,7 +264,7 @@ void drivePID(double fwdVal, double maxSpeedPercent, double timeout)
     const double pollingRate = 20;
     const double errorThreshold = 5.0;
     int inGoal = 0;
-    const int goalsNeeded = 3;
+    const int goalsNeeded = 2;
     if (maxSpeedPercent < 0)
         maxSpeedPercent = 0;
     if (maxSpeedPercent > 100)
@@ -288,7 +288,7 @@ void drivePID(double fwdVal, double maxSpeedPercent, double timeout)
         std::nth_element(rightPositions, rightPositions + 1, rightPositions + 3);
         double rightMedian = rightPositions[1];
         
-        double medianPos = (leftMedian + rightMedian);
+        double medianPos = (leftMedian + rightMedian)/2;
         double processVariable = medianPos * 360;
         
         error = target - processVariable;
@@ -675,13 +675,13 @@ void turnToHeadingSmart(float theta, int timeout, TurnToHeadingParams params, bo
         
         if (absAngleDiff < 15.0)
         {
-            params.minSpeed = 40; // Higher minimum speed for very small turns
-            params.earlyExitRange = 2; // Tighter exit range for precision
+            params.minSpeed = 100; // Higher minimum speed for very small turns
+            params.earlyExitRange = 0; // Tighter exit range for precision
         }
         else if (absAngleDiff < 30.0)
         {
-            params.minSpeed = 30; // Moderate minimum speed
-            params.earlyExitRange = 3;
+            params.minSpeed = 90; // Moderate minimum speed
+            params.earlyExitRange = 0;
         }
     }
     
