@@ -576,7 +576,7 @@ chassis.swingToHeading(260,DriveSide::LEFT,800,{.minSpeed=60},true);
                 resetOdom(false,false,false,true);
                 delay(200);
                 chassis.setPose(-62,chassis.getPose().y,chassis.getPose().theta);
-           chassis.moveToPose(-15,5,315,2000,{.forwards = false,.lead=0.3,.minSpeed=90},false);
+           chassis.moveToPose(-15,8.5,315,2000,{.forwards = false,.lead=0.3,.minSpeed=90},false);
             spinIntake(-1);
               delay(100);
                 scoreMiddle();
