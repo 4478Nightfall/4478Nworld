@@ -29,9 +29,9 @@ void initialize()
     colorSort.set_led_pwm(50); // Set LED brightness to 50%
     pros::delay(100);           // Allow sensor to stabilize
 
-    hood.set_value(HIGH); // Set back gate to default position (closed/down)
+    hood.set_value(LOW); // Set back gate to default position (closed/down)
     matchloadMech.set_value(LOW);
-    descore.set_value(LOW);
+    descore.set_value(HIGH);
     midGoal.set_value(LOW);
 
     // Add a small delay to ensure solenoid has time to respond
@@ -108,9 +108,9 @@ void autonomous()
     int selection = getAutonSelection(); // Get selected auton routine
     left_motors.set_brake_mode(MOTOR_BRAKE_HOLD);
     right_motors.set_brake_mode(MOTOR_BRAKE_HOLD);
-    hood.set_value(HIGH);
+    hood.set_value(LOW);
     matchloadMech.set_value(LOW);
-    descore.set_value(LOW); // Start with back gate closed (down)
+    descore.set_value(HIGH); // Start with back gate closed (down)
     midGoal.set_value(LOW);
 
     // Run the selected autonomous routine
@@ -174,7 +174,7 @@ void autonomous()
     //     break;
     // }
 
-        soloAWPCounter();
+        right7BallWing();
         
 }
 
@@ -193,9 +193,9 @@ void autonomous()
  */
 void opcontrol()
 {
-    hood.set_value(HIGH); // Start with front gate closed (down)
+    hood.set_value(LOW); // Start with front gate closed (down)
     matchloadMech.set_value(LOW);
-    descore.set_value(LOW);
+    descore.set_value(HIGH);
     midGoal.set_value(LOW);
 
 

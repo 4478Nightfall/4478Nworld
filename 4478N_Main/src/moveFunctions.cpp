@@ -109,9 +109,9 @@ void scoreMiddle(){
     firstStage.set_brake_mode(MOTOR_BRAKE_HOLD);
     middleStage.set_brake_mode(MOTOR_BRAKE_HOLD);
     backBottom.set_brake_mode(MOTOR_BRAKE_HOLD);
-    firstStage.move(57);
-    middleStage.move(57);
-    backBottom.move(-57);
+    firstStage.move(50);
+    middleStage.move(50);
+    backBottom.move(-50);
 }
 
 void stopIntake()

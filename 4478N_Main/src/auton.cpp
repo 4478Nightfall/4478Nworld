@@ -35,28 +35,72 @@ void EndControlZone(){
     
 }
 void parkSkills(){
-    hood.set_value(HIGH);
+    hood.set_value(LOW);
     chassis.setPose(0,0,270);
+    handleDescore();
 resetOdom(true,false,true,false);
-  handleDescore();
   spinIntake(1);
-    drivePID(35,60,800);
-    delay(1000);
-    drivePID(14,60,1500);
-    delay(1000);
-    drivePID(-4,60,800);
-    delay(500);
-    drivePID(-40,100,1500);
+    drivePID(50,60,800);
+    delay(200);
+    drivePID(-3,60,800);
+        turnToHeadingSmart(270,800,{.minSpeed = 60,.earlyExitRange = 10});
+    delay(1700);
+    drivePID(40,60,2000);
+    drivePID(-5,60,600);
+    delay(2000);
+    drivePID(-22,100,1500);
     turnToHeadingSmart(270,800,{.minSpeed = 60,.earlyExitRange = 10});
-    drivePID(5,100,600);
+    drivePID(5,40,1300);
     resetOdom(true,false,true,false);
-    drivePID(-30,100,1500);
+    drivePID(-20,100,1500);
     chassis.turnToHeading(0,700);
-    chassis.moveToPose(-22,20,0,2000,{.lead=0.1},false);
-    chassis.moveToPose(-12,5,315,2000,{.forwards = false, .lead=0.1},false);
+    chassis.moveToPose(-20,24,0,2000,{.lead=0.1,.maxSpeed = 60},false);
+    chassis.moveToPose(-8,7,315,2000,{.forwards = false, .lead=0.2},false);
+        handleMLMech();
 
+spinIntake(-1);
+delay(250);
     scoreMiddle();
+    delay(2000);
+    chassis.setPose(-10,10,chassis.getPose().theta);
+    delay(100);
+    spinIntake(1);
+    chassis.moveToPose(-45,46.5,315,2000,{.lead=0.0},false);
+    chassis.turnToHeading(270,550);
+    drivePID(30,30,1300);
+    resetOdom(false,false,false,true);
+    delay(100);
+    chassis.setPose(-62,chassis.getPose().y,chassis.getPose().theta);
+    delay(1000);
+    chassis.turnToHeading(230,800);
+    chassis.moveToPose(-22,61,270,1000,{.forwards = false, .lead=0.3},false);
+    handleMLMech();
+    chassis.moveToPose(41,56,270,2000,{.forwards = false, .lead=0.1},false);
+    resetOdom(false,true,false,true);
+    delay(100);
+    chassis.moveToPose(24,47.5,90,2000,{.forwards = false,.lead=0.1},false);
+    handleHood();
+    scoreLongFar(1);
+    delay(2000);
+    chassis.setPose(25,48,chassis.getPose().theta);  
+              turnToHeadingSmart(90,600);
+              handleMLMech();
+                drivePID(30,100,450);
+                drivePID(20,35,1000);
+                resetOdom(false,false,true,false);
+                delay(200);
+                chassis.setPose(62,chassis.getPose().y,chassis.getPose().theta);
+                delay(800);
+                chassis.moveToPose(26,47.5,90,2000,{.forwards = false,.lead=0.1},false);
+                handleHood();
+                scoreLongFar(200);
+                delay(2000);
+
+
+    
+
 }
+
 void workingSkills(){
     startDatalogging();
     hood.set_value(HIGH);
@@ -888,20 +932,23 @@ delay(1000);
 
 }
 void right7BallWing(){
- hood.set_value(HIGH);
+ hood.set_value(LOW);
     chassis.setPose(-46,-8,90);  // Set initial position facing slightly left
     spinIntake(1);  // Start intake
     handleDescore();  // Perform first descore
-    chassis.moveToPose(-24,-22,120,1200,{.lead=0.4,.minSpeed = 127},true);
-    delay(550);
+    chassis.moveToPose(-24,-22,120,1000,{.lead=0.4,.minSpeed = 127},true);
+    delay(500);
     handleMLMech();
     delay(200);
-    chassis.turnToHeading(-105,600,{.earlyExitRange = 5},false);
-    chassis.moveToPose(-62,-48.5,270,1500,{.lead=0.3,.minSpeed = 50,.earlyExitRange = 10},false);
-    turnToHeadingSmart(267,300);  // Turn towards goal
-    drivePID(20,35,1300);
-    turnToHeadingSmart(271,700);
-    backIntoLongGoalML();  
+    chassis.turnToHeading(-110,400,{.earlyExitRange = 5},false);
+    chassis.moveToPose(-63,-43,270,1200z,{.lead=0.3,.minSpeed = 70,.earlyExitRange = 10},false);
+    chassis.turnToHeading(270,500);  // Turn towards goal
+drivePID(20,30,1200);
+    resetOdom(false,false,true,false);
+    delay(200);
+    chassis.setPose(-62,chassis.getPose().y,chassis.getPose().theta);
+    delay(500);
+    chassis.moveToPose(-25,-46,270,900,{.forwards = false,.lead=0.1,.minSpeed = 100},false);
       spinIntake(-1);
     delay(100);
     spinIntake(1); 
