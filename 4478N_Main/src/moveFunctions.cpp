@@ -78,11 +78,11 @@ void wing(){
     chassis.setPose(-31.232,-47.334,chassis.getPose().theta);
     delay(100);
     handleDescore();
-    chassis.moveToPose(-55.692,-34.036,270,2000,{.forwards=true, .lead=.15,.minSpeed=60},false);
+    chassis.moveToPose(-50.692,-37.036,275,2000,{.forwards=true, .lead=.15,.minSpeed=60},false);
     
-    turnToHeadingSmart(275,600,{},false);
+    turnToHeadingSmart(270,700,{},false);
 
-    drivePID(-37,100,2000);
+    drivePID(-33,100,2000);
     while(true){
     chassis.swingToHeading(265,DriveSide::RIGHT,300,{.minSpeed=70},true); 
     delay(20);
@@ -112,6 +112,14 @@ void scoreMiddle(){
     firstStage.move(50);
     middleStage.move(50);
     backBottom.move(-50);
+}
+void scoreMiddleSkills(){
+    firstStage.set_brake_mode(MOTOR_BRAKE_HOLD);
+    middleStage.set_brake_mode(MOTOR_BRAKE_HOLD);
+    backBottom.set_brake_mode(MOTOR_BRAKE_HOLD);
+    firstStage.move(40);
+    middleStage.move(40);
+    backBottom.move(-40);
 }
 
 void stopIntake()

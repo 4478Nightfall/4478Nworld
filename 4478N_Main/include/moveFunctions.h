@@ -9,6 +9,7 @@ extern void setPose();
 extern void holdPush();
 extern void spinIntake(double=1); // -1 outtake, 1 intake
 extern void scoreMiddle();
+extern void scoreMiddleSkills();
 extern void scoreLongClose(int time);
 extern void scoreLongFar(int time);
 extern void matchLoad(int timeMs = 600);

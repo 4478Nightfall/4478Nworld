@@ -32,7 +32,7 @@ void initialize()
     hood.set_value(LOW); // Set back gate to default position (closed/down)
     matchloadMech.set_value(LOW);
     descore.set_value(HIGH);
-    midGoal.set_value(LOW);
+    midGoal.set_value(HIGH);
 
     // Add a small delay to ensure solenoid has time to respond
     pros::delay(100);
@@ -111,7 +111,7 @@ void autonomous()
     hood.set_value(LOW);
     matchloadMech.set_value(LOW);
     descore.set_value(HIGH); // Start with back gate closed (down)
-    midGoal.set_value(LOW);
+    midGoal.set_value(HIGH);
 
     // Run the selected autonomous routine
     // switch (selection)
@@ -174,7 +174,7 @@ void autonomous()
     //     break;
     // }
 
-        right7BallWing();
+        parkSkills();
         
 }
 
@@ -196,7 +196,7 @@ void opcontrol()
     hood.set_value(LOW); // Start with front gate closed (down)
     matchloadMech.set_value(LOW);
     descore.set_value(HIGH);
-    midGoal.set_value(LOW);
+    midGoal.set_value(HIGH);
 
 
     // backGate.set_value(LOW);    // Start with back gate closed (down)i
@@ -213,19 +213,6 @@ void opcontrol()
     // Main driver control loop
     while (true)
     {
-        
-        // Toggle between fast and slow outtake speed
-        if (controller.get_digital(E_CONTROLLER_DIGITAL_X)){
-             firstStage.move(-70);
-            middleStage.move(-70);
-        }
-        else {
-                firstStage.set_brake_mode(MOTOR_BRAKE_COAST);
-            middleStage.set_brake_mode(MOTOR_BRAKE_COAST);  
-                firstStage.brake(); 
-            middleStage.brake();
-        }
-    
         // Display color sensor debugging info
 
         firstStage.set_brake_mode(MOTOR_BRAKE_HOLD);
@@ -247,8 +234,14 @@ void opcontrol()
         // Move the robot using tank drive
         chassis.tank(leftY, rightY);
 
-        // Intake control
-        if (controller.get_digital(E_CONTROLLER_DIGITAL_R2))
+        // Intake: Y (middle-goal spin) takes priority over R2/R1.
+        if (controller.get_digital(E_CONTROLLER_DIGITAL_Y))
+        {
+            firstStage.move(127);
+            middleStage.move(127);
+            backBottom.move(-127);
+        }
+        else if (controller.get_digital(E_CONTROLLER_DIGITAL_R2))
         {
             firstStage.move(127);
             middleStage.move(127);
@@ -270,30 +263,8 @@ void opcontrol()
             backBottom.brake();
         }
 
-        // middle goal - A pressed: spin intake + midGoal HIGH; released: keep midGoal HIGH for 2 sec
-        bool aPressed = controller.get_digital(E_CONTROLLER_DIGITAL_A);
-        if (aPressed)
-        {
-            firstStage.move(127);
-            middleStage.move(127);
-            backBottom.move(-127);
-            midGoal.set_value(LOW);
-            wasAPressed = true;
-        }
-        else
-        {
-            if (wasAPressed) {
-                midGoalReleaseTime = pros::millis();
-                wasAPressed = false;
-            }
-            if (midGoalReleaseTime != 0 && pros::millis() - midGoalReleaseTime < 1500)
-                midGoal.set_value(LOW);
-            else
-            {
-                midGoal.set_value(HIGH);
-                if (midGoalReleaseTime != 0 && pros::millis() - midGoalReleaseTime >= 1500)
-                    midGoalReleaseTime = 0;
-            }
+       if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+            midGoal.set_value(midGoal.get_value() == LOW ? HIGH : LOW);
         }
         // Hood control - open when held, close when released
         if (controller.get_digital(E_CONTROLLER_DIGITAL_L1))
@@ -314,7 +285,7 @@ void opcontrol()
             descore.set_value(HIGH); // Close descore when button is released
         }
 
-        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
             matchloadMech.set_value(matchloadMech.get_value() == LOW ? HIGH : LOW);
         }
 
