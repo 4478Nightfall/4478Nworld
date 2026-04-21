@@ -78,7 +78,7 @@ void wing(){
     chassis.setPose(-31.232,-47.334,chassis.getPose().theta);
     delay(100);
     handleDescore();
-    chassis.moveToPose(-50.692,-37.036,275,2000,{.forwards=true, .lead=.15,.minSpeed=60},false);
+    chassis.moveToPose(-50.692,-36.536,275,2000,{.forwards=true, .lead=.15,.minSpeed=60},false);
     
     turnToHeadingSmart(270,700,{},false);
 

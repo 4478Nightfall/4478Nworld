@@ -174,7 +174,7 @@ void autonomous()
     //     break;
     // }
 
-        parkSkills();
+        Left4_3LongFirst();
         
 }
 
