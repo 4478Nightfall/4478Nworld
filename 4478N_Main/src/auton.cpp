@@ -47,7 +47,7 @@ resetOdom(true,false,true,false);
         turnToHeadingSmart(270,800,{.minSpeed = 60,.earlyExitRange = 10});
     delay(1300);
     drivePID(40,60,1000);
-    drivePID(-3,60,600);
+    drivePID(-4,60,600);
     delay(1300);
             turnToHeadingSmart(270,800,{.minSpeed = 60,.earlyExitRange = 10});
     drivePID(-22,100,1500);
@@ -56,7 +56,7 @@ chassis.turnToHeading(270,700);
     resetOdom(true,false,true,false);
     drivePID(-20,100,1500);
     chassis.turnToHeading(0,700);
-    chassis.moveToPose(-18,18,0,2000,{.lead=0.1,.maxSpeed = 60},false);
+    chassis.moveToPose(-16,18,0,2000,{.lead=0.1,.maxSpeed = 60},false);
     chassis.moveToPose(-7.5,8,315,2000,{.forwards = false, .lead=0.2},false);
         handleMLMech();
 
@@ -67,7 +67,7 @@ delay(250);
     chassis.setPose(-10,10,chassis.getPose().theta);
     delay(100);
     spinIntake(1);
-    chassis.moveToPose(-45,46.5,315,2000,{.lead=0.0},false);
+    chassis.moveToPose(-45,47.5,315,2000,{.lead=0.1},false);
     chassis.turnToHeading(270,550);
     drivePID(50,30,1700);
     resetOdom(false,false,false,true);
@@ -148,30 +148,24 @@ void workingSkills(){
     midGoal.set_value(LOW);
 chassis.setPose(0,0,180);
 handleDescore();
-drivePID(31,100,1000);
+drivePID(30.5,100,1000);
 handleMLMech();
 chassis.turnToHeading(270,1000);
 spinIntake(1);
-drivePID(28,40,1700); //first loader
-drivePID(-1,2,300);
-delay(1100); 
-turnToHeadingSmart(270,600);
-    drivePID(-5,100,600);
+drivePID(30,30,1700); //first loader
+delay(1200); 
+     resetOdom(false,false,true,false);
+    delay(100);
+    chassis.setPose(-62,chassis.getPose().y,chassis.getPose().theta);
+    delay(100);
+        chassis.turnToHeading(300,800);
+    chassis.moveToPose(-22,-61,270,1000,{.forwards = false, .lead=0.3},false);
     handleMLMech();
-    chassis.setPose(-58,-46.3,chassis.getPose().theta); 
-       delay(250);
-
-    turnToHeadingSmart(-75,800,{.minSpeed = 60,.earlyExitRange = 10}); 
-    chassis.moveToPose(-30, -60, -85, 1500, {.forwards = false,.lead=0.3,.minSpeed = 60,.earlyExitRange = 10}); //control point
-    chassis.moveToPose(35, -62, -90, 4000,{.forwards = false,.lead=0.03,.minSpeed = 90}, false); //going to long goal
-    chassis.turnToHeading(0,1000);
+    chassis.moveToPose(41,-56,270,2000,{.forwards = false, .lead=0.1},false);
+    resetOdom(false,true,false,true);
+    delay(100);
+    chassis.moveToPose(24,-47.5,90,2000,{.forwards = false,.lead=0.1},false);
     
-    drivePID(12,70,1300);
-
-
-    chassis.turnToHeading(90,1000);
-alignToLongGoalOpposite();
-    handleHood();
 spinIntake(-1);
 delay(150);
     spinIntake(1);
@@ -179,15 +173,16 @@ scoreLongFar(2000);
 delay(1300);
        handleMLMech(); 
 
-turnToHeadingSmart(89,600);
-    drivePID(20,100,1500);
-       handleHood();     
-
-    drivePID(25,35,1500); //2nd matchload
-    drivePID(-1,2,500);
-delay(1100);
-drivePID(-15,100,1500);
-alignToLongGoalOpposite();
+ turnToHeadingSmart(90,600);
+              handleMLMech();
+              handleHood();
+                drivePID(30,100,550);
+                drivePID(20,35,1000);
+                resetOdom(false,false,false,true);
+                delay(200);
+                chassis.setPose(62,chassis.getPose().y,chassis.getPose().theta);
+                delay(800);
+                chassis.moveToPose(26,-47.5,90,2000,{.forwards = false,.lead=0.1},false);
 
 handleMLMech();
 handleHood();
@@ -197,64 +192,45 @@ spinIntake(1);
 scoreLongFar(2000);
 chassis.setPose(26,-48,chassis.getPose().theta); //seting position while scoring 3rd loader
 delay(1300);
-drivePID(15,100,1000);
-handleHood();
-
-chassis.turnToHeading(0,1000);
-chassis.moveToPose(40,48,0,2000,{.lead=0.01},false);
-handleMLMech();
-
-chassis.turnToHeading(90,800);
-spinIntake(1);
-drivePID(40,35,2500); //3rd loader
-drivePID(-1,2,300);
-delay(1300);
-    drivePID(-5,100,800);
+drivePID(10,100,500);
+                chassis.turnToHeading(0,700);
+                drivePID(10,100,500);
+                resetOdom(false,true,false,true);
+                chassis.moveToPose(46,48,0,3000,{.lead=0.01},false);
+                chassis.turnToHeading(90,700);
+                drivePID(30,40,1500);
+                resetOdom(false,false,true,false);
+                delay(100);
+                
+chassis.setPose(63,chassis.getPose().y,chassis.getPose().theta);
+                delay(1000);
+                chassis.turnToHeading(35,800);
+    chassis.moveToPose(22,63,90,1000,{.forwards = false, .lead=0.3},false);
     handleMLMech();
-    chassis.setPose(52,46,chassis.getPose().theta); //setting positon for movement to second long.
-    delay(500);
-    turnToHeadingSmart(115,500,{.minSpeed = 60,.earlyExitRange = 10});
-    chassis.moveToPose(20,60,95,2000,{.forwards = false,.lead=0.4,.minSpeed = 60,.earlyExitRange = 10},false);
-    chassis.moveToPose(-45,63,92,4000,{.forwards = false,.lead=0.03,.minSpeed = 90},false);
-    chassis.turnToHeading(180,1000);
-    drivePID(12,70,1300);
-    chassis.turnToHeading(270,1000);
-alignToLongGoal();
+    chassis.moveToPose(-41,56,90,2000,{.forwards = false, .lead=0.1},false);
+    resetOdom(false,true,false,true);
+    delay(100);
+    chassis.moveToPose(-24,47.5,270,2000,{.forwards = false,.lead=0.1},false);
     handleHood();
-spinIntake(-1);
-delay(150);
-    spinIntake(1);
-    scoreLongClose(2000);
-delay(1300);
-      handleMLMech(); 
-            handleHood();
-
-      turnToHeadingSmart(270,800);
-    drivePID(20,100,1500); 
-
-
-    drivePID(30,35,2000);    
-         drivePID(-1,2,500);
-         delay(1100);
-         drivePID(-15,100,1500);
-  alignToLongGoal();
-
-
-    handleMLMech();
-    handleHood();
-spinIntake(-1);
-delay(150);
-    spinIntake(1);
-    scoreLongClose(2000);
-delay(1300);
-    chassis.setPose(-24,47,chassis.getPose().theta);
+    scoreLongClose(1);
+    delay(2000);
+    chassis.setPose(-25,48,chassis.getPose().theta);  
+              chassis.turnToHeading(270,600);
+              handleMLMech();
+                drivePID(30,100,550);
+                drivePID(20,35,1000);
+                resetOdom(false,false,false,true);
+                delay(200);
+                chassis.setPose(-62,chassis.getPose().y,chassis.getPose().theta);
+                delay(800);
+                chassis.moveToPose(-26,47.5,270,2000,{.forwards = false,.lead=0.1},false);
+                handleHood();
+                scoreLongFar(200);
+                delay(2000);
+                chassis.setPose(-24,47,chassis.getPose().theta);
     chassis.moveToPose(-58,10,180,3000,{.lead=0.4},false);
-    handleMLMech();
-    turnToHeadingSmart(185,800);
-    drivePID(-5,100,600);
     drivePID(50,100,2000);
     handleMLMech();
-    drivePID(-10,30,2000);
 } 
 
 
@@ -747,15 +723,15 @@ void Left4_3LongFirst(){
     resetOdom(true,false,true,false);
     handleDescore();
     spinIntake(1);
-     drivePID(30.5,100,900);
+    drivePID(31,100,1200);
      handleMLMech();
      chassis.turnToHeading(270,1000);
     drivePID(30,30,1600);
     resetOdom(false,false,false,true);
     delay(200);
     chassis.setPose(-62,chassis.getPose().y,chassis.getPose().theta);
-    delay(200);
-    chassis.moveToPose(-24,48,0,1000,{.forwards = false,.lead=0.01,.minSpeed=100},false);
+    delay(100);
+    chassis.moveToPose(-24,48,270,1000,{.forwards = false,.lead=0.01,.minSpeed=100},false);
     handleHood();
     spinIntake(-1);
     delay(100);
@@ -771,15 +747,15 @@ handleMLMech();
     handleHood();
     drivePID(-5,100,800);
    chassis.turnToHeading(315,600,{},false);
-    chassis.moveToPose(-7,7,315,1200,{.forwards = false,.lead=0.01,.minSpeed = 60},false);
+    chassis.moveToPose(-7,8.5,315,1200,{.forwards = false,.lead=0.01,.minSpeed = 60},false);
     spinIntake(-1);
-    delay(100);
+    delay(200);
     scoreMiddle();
-    delay(1000);
+    delay(1400);
     handleDescore();
     handleMLMech();
     chassis.turnToHeading(315,800);
-    chassis.moveToPose(-20,23,315,550,{.lead=0.1,.minSpeed=60,.earlyExitRange=15},false);
+    chassis.moveToPose(-20,23,315,750,{.lead=0.1,.minSpeed=60,.earlyExitRange=15},false);
     chassis.swingToHeading(80,DriveSide::RIGHT,200,{},false);
     chassis.moveToPose(-0,36,100,1500,{.lead=0.05,.minSpeed=90},false);
     chassis.turnToHeading(120,900);
@@ -854,10 +830,10 @@ chassis.setPose(0,0,180);  // Set initial position facing slightly left
      chassis.turnToHeading(270,1000);
     drivePID(30,30,1700);
     resetOdom(false,false,true,false);
-delay(300);
+delay(100);
     chassis.setPose(-62,chassis.getPose().y,chassis.getPose().theta);
     delay(200);
-    chassis.moveToPose(-24,-47.5,0,1000,{.forwards = false,.lead=0.01,.minSpeed=100},false);
+    chassis.moveToPose(-24,-47.5,270,1000,{.forwards = false,.lead=0.01,.minSpeed=100},false);
     handleHood();
     spinIntake(-1);
     delay(100);
@@ -875,7 +851,7 @@ handleMLMech();
 delay(150);
    chassis.turnToHeading(45,600,{},false);
    handleMLMech();
-    chassis.moveToPose(-15,-16,45,1200,{.forwards = true,.lead=0.05},false);
+    chassis.moveToPose(-14,-16,45,1200,{.forwards = true,.lead=0.05},false);
     spinIntake(-0.5);
     delay(1500);
     handleDescore();
@@ -883,7 +859,7 @@ delay(150);
     chassis.turnToHeading(45,800);
     chassis.moveToPose(-23,-26,45,900,{.forwards = false,.lead=0.1,.minSpeed=60,.earlyExitRange=15},false);
     chassis.swingToHeading(280,DriveSide::RIGHT,700,{},false);
-    chassis.moveToPose(-8,-40,260,1500,{.forwards = false,.lead=0.05,.minSpeed=90},false);
+    chassis.moveToPose(-5,-40,260,1500,{.forwards = false,.lead=0.05,.minSpeed=90},false);
     chassis.turnToHeading(250,900);
      left_motors.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     right_motors.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -991,7 +967,7 @@ void right7BallWing(){
     chassis.moveToPose(-24,-25,100,1000,{.lead=0.4,.minSpeed = 127},true);
     delay(500);
     handleMLMech();
-    chassis.turnToHeading(-110,400,{.earlyExitRange = 5},false);
+    chassis.turnToHeading(-110,300,{.minSpeed = 127,.earlyExitRange = 5},false);
     chassis.moveToPose(-70,-50,270,1300,{.lead=0.3,.minSpeed = 70,.earlyExitRange = 10},false);
     chassis.turnToHeading(270,400);  // Turn towards goal
 drivePID(20,30,1000);
@@ -1006,7 +982,6 @@ drivePID(20,30,1000);
        handleMLMech();
     handleHood();
     scoreLongClose(1);
-delay(1000);
 
 
     wing();

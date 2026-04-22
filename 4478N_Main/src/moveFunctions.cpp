@@ -78,11 +78,11 @@ void wing(){
     chassis.setPose(-31.232,-47.334,chassis.getPose().theta);
     delay(100);
     handleDescore();
-    chassis.moveToPose(-50.692,-36.536,275,2000,{.forwards=true, .lead=.15,.minSpeed=60},false);
+    chassis.moveToPose(-45.692,-36.536,275,2000,{.forwards=true, .lead=.15,.minSpeed=60},false);
     
-    turnToHeadingSmart(270,700,{},false);
+    turnToHeadingSmart(270,600,{},false);
 
-    drivePID(-33,100,2000);
+    drivePID(-24,100,2000);
     while(true){
     chassis.swingToHeading(265,DriveSide::RIGHT,300,{.minSpeed=70},true); 
     delay(20);
@@ -109,8 +109,8 @@ void scoreMiddle(){
     firstStage.set_brake_mode(MOTOR_BRAKE_HOLD);
     middleStage.set_brake_mode(MOTOR_BRAKE_HOLD);
     backBottom.set_brake_mode(MOTOR_BRAKE_HOLD);
-    firstStage.move(50);
-    middleStage.move(50);
+    firstStage.move(127);
+    middleStage.move(100);
     backBottom.move(-50);
 }
 void scoreMiddleSkills(){
