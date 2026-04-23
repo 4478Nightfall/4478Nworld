@@ -110,7 +110,7 @@ void scoreMiddle(){
     middleStage.set_brake_mode(MOTOR_BRAKE_HOLD);
     backBottom.set_brake_mode(MOTOR_BRAKE_HOLD);
     firstStage.move(127);
-    middleStage.move(100);
+    middleStage.move(50);
     backBottom.move(-50);
 }
 void scoreMiddleSkills(){
