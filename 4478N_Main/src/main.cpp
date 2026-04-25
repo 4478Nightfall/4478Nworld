@@ -174,7 +174,7 @@ void autonomous()
     //     break;
     // }
 
-        parkSkills();
+        left7BallHold();
 }
 
 /**
@@ -237,8 +237,8 @@ void opcontrol()
         if (controller.get_digital(E_CONTROLLER_DIGITAL_Y))
         {
             firstStage.move(127);
-            middleStage.move(127);
-            backBottom.move(-127);
+            middleStage.move(50);
+            backBottom.move(-40);
         }
         else if (controller.get_digital(E_CONTROLLER_DIGITAL_R2))
         {

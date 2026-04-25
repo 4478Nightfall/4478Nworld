@@ -80,9 +80,9 @@ void wing(){
     handleDescore();
     chassis.moveToPose(-45.692,-36.536,275,2000,{.forwards=true, .lead=.15,.minSpeed=60},false);
     
-    turnToHeadingSmart(270,600,{},false);
+    turnToHeadingSmart(272,600,{},false);
 
-    drivePID(-24,100,2000);
+    drivePID(-24,100,800);
     while(true){
     chassis.swingToHeading(265,DriveSide::RIGHT,300,{.minSpeed=70},true); 
     delay(20);
@@ -134,7 +134,7 @@ void stopIntake()
 
 void scoreLongClose(int time){
     spinIntake(1);
-   drivePID(-10,100,400);
+   drivePID(-100,100,400);
 chassis.turnToHeading(270,1000);
 drivePID(-100,100,1000);
     
